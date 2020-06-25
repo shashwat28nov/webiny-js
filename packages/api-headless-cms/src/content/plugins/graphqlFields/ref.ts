@@ -80,6 +80,21 @@ const plugin: CmsModelFieldToGraphQLPlugin = {
             }
 
             return field.fieldId + ": CmsRefInput";
+        },
+        checkLockedFieldInvariant({ lockedField, field }) {
+            if (lockedField.modelId && lockedField.modelId !== field.settings.modelId) {
+                throw new Error(
+                    `Cannot change "modelId" for the "${lockedField.fieldId}" field because it's already in use in created content.`
+                );
+            }
+        },
+        createLockedField({ field }) {
+            return {
+                modelId: field.settings.modelId
+            };
+        },
+        createLockedFieldType() {
+            return "modelId: String";
         }
     }
 };
