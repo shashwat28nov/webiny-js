@@ -128,6 +128,21 @@ const plugin: CmsModelFieldToGraphQLPlugin = {
 
                     return field.fieldId + ": CmsTimeInput";
             }
+        },
+        checkLockedFieldInvariant({ lockedField, field }) {
+            if (lockedField.formatType && lockedField.formatType !== field.settings.type) {
+                throw new Error(
+                    `Cannot change "type" for the "${lockedField.fieldId}" field because it's already in use in created content.`
+                );
+            }
+        },
+        createLockedField({ field }) {
+            return {
+                formatType: field.settings.type
+            };
+        },
+        createLockedFieldType() {
+            return "formatType: String";
         }
     }
 };
