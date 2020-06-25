@@ -10,7 +10,10 @@ import { createManageSDL } from "./createManageSDL";
 import { createReadSDL } from "./createReadSDL";
 import { createManageResolvers } from "./createManageResolvers";
 import { createReadResolvers } from "./createReadResolvers";
-import { getSchemaFromFieldPlugins } from "../utils/getSchemaFromFieldPlugins";
+import {
+    getLockedFieldTypeFromFieldPlugins,
+    getSchemaFromFieldPlugins
+} from "../utils/getSchemaFromFieldPlugins";
 
 export interface GenerateSchemaPlugins {
     (params: { context: CmsContext }): Promise<void>;
@@ -42,6 +45,33 @@ export const generateSchemaPlugins: GenerateSchemaPlugins = async ({ context }) 
             resolvers: s.resolvers || {}
         }
     }));
+
+    const cmsLockedFieldTypes: string[] = getLockedFieldTypeFromFieldPlugins({
+        fieldTypePlugins,
+        type: cms.type
+    });
+
+    const cmsLockedFieldTypeDef = `
+        type CmsLockedField {
+            fieldId: String
+            multipleValues: Boolean
+            type: String
+            ${cmsLockedFieldTypes.join("\n")}
+        }
+    `;
+
+    const cmsLockedFieldSchemaPlugin: GraphQLSchemaPlugin = {
+        name: "graphql-schema-cms-locked-field-types",
+        type: "graphql-schema",
+        schema: {
+            typeDefs: gql`
+                ${cmsLockedFieldTypeDef}
+            `,
+            resolvers: {}
+        }
+    };
+
+    newPlugins.push(cmsLockedFieldSchemaPlugin);
 
     models
         .filter(model => model.fields.length > 0)

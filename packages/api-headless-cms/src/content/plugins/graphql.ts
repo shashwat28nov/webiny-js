@@ -109,12 +109,6 @@ export default ({ type }) => [
                     data: Boolean
                     error: CmsError
                 }
-
-                type CmsLockedField {
-                    fieldId: String
-                    multipleValues: Boolean
-                    type: String
-                }
                 
                 type CmsContentModel {
                     id: ID
