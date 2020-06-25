@@ -20,7 +20,8 @@ import {
 import {
     CmsContext,
     CmsContentModel,
-    CmsModelFieldToCommodoFieldPlugin
+    CmsModelFieldToCommodoFieldPlugin,
+    CmsModelFieldToGraphQLPlugin
 } from "@webiny/api-headless-cms/types";
 
 import { withModelFiltering } from "./withModelFiltering";
@@ -172,12 +173,26 @@ export const createDataModel = (
                             ) {
                                 continue;
                             }
+                            // Get `lockedField` data specific to a field
+                            let lockedFieldData = {};
+                            const plugin: CmsModelFieldToGraphQLPlugin = context.plugins.byName(
+                                `cms-model-field-to-graphql-${field.type}`
+                            );
+
+                            if (plugin.manage.createLockedField) {
+                                lockedFieldData = plugin.manage.createLockedField({
+                                    field
+                                });
+                            }
+
                             lockedFields = [
                                 ...lockedFields,
                                 {
                                     fieldId: field.fieldId,
                                     multipleValues: field.multipleValues,
-                                    type: field.type
+                                    type: field.type,
+                                    // add `lockedField` data generated from plugins
+                                    ...lockedFieldData
                                 }
                             ];
                         }
