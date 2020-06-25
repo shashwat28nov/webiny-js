@@ -51,6 +51,8 @@ export const GET_CONTENT_MODEL = gql`
                 titleFieldId
                 lockedFields {
                     fieldId
+                    modelId
+                    formatType
                 }
                 fields {
                     ${FIELDS_FIELDS}
