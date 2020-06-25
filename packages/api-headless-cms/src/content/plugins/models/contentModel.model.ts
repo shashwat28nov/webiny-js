@@ -24,7 +24,7 @@ const required = validation.create("required");
 
 export default ({ createBase, context }: { createBase: Function; context: CmsContext }) => {
     const ContentModelFieldsModel = createFieldsModel(context);
-    const LockedFieldsModel = createLockedFieldsModel();
+    const LockedFieldsModel = createLockedFieldsModel(context);
 
     const CmsContentModel = pipe(
         withName(`CmsContentModel`),
@@ -183,6 +183,22 @@ export default ({ createBase, context }: { createBase: Function; context: CmsCon
                         throw new Error(
                             `Cannot change "multipleValues" for the "${lockedField.fieldId}" field because it's already in use in created content.`
                         );
+                    }
+                    // TODO: think of a use case for this one
+                    // How can someone change a type of the field i.e change `text` field into `number`
+                    // Perhaps, one can delete a `text` and then create `number` field with same name hence same `fieldID`
+                    if (lockedField.type !== existingField.type) {
+                        throw new Error(
+                            `Cannot change field type for the "${lockedField.fieldId}" field because it's already in use in created content.`
+                        );
+                    }
+
+                    const plugin = context.plugins.byName(
+                        `cms-model-field-to-graphql-${lockedField.type}`
+                    );
+
+                    if (plugin.manage.checkLockedFieldInvariant) {
+                        plugin.manage.checkLockedFieldInvariant({ lockedField, field: existingField });
                     }
                 }
 
