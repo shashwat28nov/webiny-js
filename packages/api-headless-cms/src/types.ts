@@ -110,6 +110,7 @@ export type LockedField = {
     fieldId: string;
     multipleValues: boolean;
     type: string;
+    [key: string]: any;
 };
 
 export type CmsContentModel = {
@@ -140,6 +141,7 @@ export type CmsModelFieldToCommodoFieldPlugin<TContext = CmsContext> = Plugin & 
         field: CmsContentModelField;
         validation?(value): Promise<boolean>;
     }): void;
+    createLockedFieldModel?(params: any): any;
 };
 
 export type ContextBeforeContentModelsPlugin<T = Context> = Plugin & {
@@ -181,6 +183,9 @@ export type CmsModelFieldToGraphQLPlugin = Plugin & {
             model: CmsContentModel;
             field: CmsContentModelField;
         }): GraphQLFieldResolver;
+        checkLockedFieldInvariant?(params: { lockedField: LockedField; field: CmsContentModelField }): void;
+        createLockedField?(params: { field: CmsContentModelField }): any;
+        createLockedFieldType?(): string;
     };
 };
 
