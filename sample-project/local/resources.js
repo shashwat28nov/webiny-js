@@ -1,5 +1,3 @@
-const { getLayerArn } = require("@webiny/aws-layers");
-
 const apolloServiceEnv = {
     DEBUG: "true",
     DB_PROXY_FUNCTION: "${databaseProxy.arn}",
@@ -130,6 +128,64 @@ module.exports = () => ({
                     env: {
                         DB_PROXY_FUNCTION: "${databaseProxy.arn}",
                         DEBUG: process.env.DEBUG
+                    }
+                }
+            }
+        },
+        filesManage: {
+            watch: ["./files/manage/build"],
+            build: {
+                root: "./files/manage",
+                script: `yarn build`
+            },
+            deploy: {
+                component: "@webiny/serverless-function",
+                inputs: {
+                    role: "${lambdaRole.arn}",
+                    description: "Triggered when a file is deleted.",
+                    region: process.env.AWS_REGION,
+                    code: "./files/manage/build",
+                    handler: "handler.handler",
+                    memory: 512,
+                    timeout: 10,
+                    permissions: [
+                        {
+                            Action: "lambda:InvokeFunction",
+                            Principal: "s3.amazonaws.com",
+                            StatementId: "s3invoke",
+                            SourceArn: `arn:aws:s3:::${process.env.S3_BUCKET}`
+                        }
+                    ],
+                    env: {
+                        S3_BUCKET: process.env.S3_BUCKET
+                    }
+                }
+            }
+        },
+        filesBucket: {
+            deploy: {
+                component: "@webiny/serverless-aws-s3",
+                inputs: {
+                    region: process.env.AWS_REGION,
+                    name: process.env.S3_BUCKET,
+                    accelerated: false,
+                    cors: {
+                        CORSRules: [
+                            {
+                                AllowedHeaders: ["*"],
+                                AllowedMethods: ["POST", "GET"],
+                                AllowedOrigins: ["*"],
+                                MaxAgeSeconds: 3000
+                            }
+                        ]
+                    },
+                    notificationConfiguration: {
+                        LambdaFunctionConfigurations: [
+                            {
+                                LambdaFunctionArn: "${filesManage.arn}",
+                                Events: ["s3:ObjectRemoved:*"]
+                            }
+                        ]
                     }
                 }
             }

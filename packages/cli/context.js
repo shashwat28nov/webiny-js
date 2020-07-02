@@ -5,6 +5,7 @@ const { GetEnvVars } = require("env-cmd");
 const findUp = require("find-up");
 const { PluginsContainer } = require("@webiny/plugins");
 const debug = require("debug")("webiny");
+const onExit = require("death");
 
 const webinyRootPath = findUp.sync("webiny.root.js");
 if (!webinyRootPath) {
@@ -17,6 +18,8 @@ const projectRoot = path.dirname(webinyRootPath);
 
 class Context {
     constructor() {
+        this.onExitCallbacks = [];
+
         this.paths = {
             projectRoot
         };
@@ -41,6 +44,14 @@ class Context {
 
         this.projectName = this.config.projectName;
         this.plugins = new PluginsContainer();
+
+        onExit(async (signal, err) => {
+            this.log("Cleaning up...");
+            for (let i = 0; i < this.onExitCallbacks.length; i++) {
+                await this.onExitCallbacks[i]();
+            }
+            process.exit();
+        });
     }
 
     loadUserPlugins() {
@@ -62,6 +73,10 @@ class Context {
                 })
             );
         }
+    }
+
+    onExit(callback) {
+        this.onExitCallbacks.push(callback);
     }
 
     log(...args) {

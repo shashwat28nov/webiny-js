@@ -17,6 +17,7 @@
     "@webiny/tracking": "^4.2.0",
     "camelcase": "^5.3.1",
     "chalk": "^2.4.2",
+    "death": "^1.1.0",
     "debug": "^4.1.1",
     "env-cmd": "^9.0.3",
     "execa": "^2.0.5",
