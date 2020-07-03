@@ -114,12 +114,20 @@ export type CmsEditorFieldValidatorPlugin = Plugin & {
             setMessage: (message: string) => void;
             data: CmsEditorFieldValidator;
         }) => React.ReactElement;
+        validate: (value: any, validator: CmsFormFieldValidator) => Promise<any>;
     };
+};
+
+export type CmsFormFieldValidator = {
+    name: string;
+    message: any;
+    settings: any;
 };
 
 export type CmsEditorContentTab = React.FC<{
     activeTab: boolean;
 }>;
+
 
 // ------------------------------------------------------------------------------------------------------------
 
@@ -153,20 +161,6 @@ export type CmsFormFieldPatternValidatorPlugin = Plugin & {
         name: string;
         message: string;
         label: string;
-    };
-};
-
-export type CmsFormFieldValidator = {
-    name: string;
-    message: any;
-    settings: any;
-};
-
-export type CmsFormFieldValidatorPlugin = Plugin & {
-    type: "form-field-validator";
-    validator: {
-        name: string;
-        validate: (value: any, validator: CmsFormFieldValidator) => Promise<any>;
     };
 };
 
