@@ -2,13 +2,15 @@ import React, { useRef, useCallback, cloneElement } from "react";
 import {
     CmsEditorField,
     CmsEditorFieldRendererPlugin,
-    CmsEditorContentModel
+    CmsEditorContentModel,
+    CmsEditorFieldValidatorPlugin
 } from "@webiny/app-headless-cms/types";
 import get from "lodash.get";
 import { i18n } from "@webiny/app/i18n";
 import getValue from "./functions/getValue";
 import setValue from "./functions/setValue";
 import Label from "./components/Label";
+import { useI18N } from "@webiny/app-i18n/hooks/useI18N";
 
 const t = i18n.ns("app-headless-cms/admin/components/content-form");
 
@@ -18,8 +20,17 @@ const RenderFieldElement = (props: {
     locale: any;
     contentModel: CmsEditorContentModel;
     renderPlugins: CmsEditorFieldRendererPlugin[];
+    validatorPlugins: CmsEditorFieldValidatorPlugin[];
 }) => {
-    const { renderPlugins, field, Bind: BaseFormBind, locale, contentModel } = props;
+    const i18n = useI18N();
+    const {
+        renderPlugins,
+        validatorPlugins,
+        field,
+        Bind: BaseFormBind,
+        locale,
+        contentModel
+    } = props;
     const renderPlugin = renderPlugins.find(
         plugin => plugin.renderer.rendererName === get(field, "renderer.name")
     );
@@ -38,13 +49,47 @@ const RenderFieldElement = (props: {
                 defaultValue = undefined;
 
             if (field.multipleValues) {
+                // TODO: @ashutosh Make sure the validation and multipleValuesValidation is supported.
                 defaultValue = [];
                 validators = field.multipleValuesValidation;
                 if (index >= 0) {
                     validators = field.validation;
                 }
             } else {
-                validators = field.validation;
+                // TODO: @ashutosh upgrade to support multiple locales
+                validators = field.validation
+                    .map(item => {
+                        const validatorPlugin = validatorPlugins.find(
+                            plugin => plugin.validator.name === item.name
+                        );
+
+                        if (
+                            !validatorPlugin ||
+                            typeof validatorPlugin.validator.validate !== "function"
+                        ) {
+                            return;
+                        }
+
+                        return async value => {
+                            let isInvalid;
+                            try {
+                                const result = await validatorPlugin.validator.validate(
+                                    value,
+                                    item
+                                );
+                                isInvalid = result === false;
+                            } catch (e) {
+                                isInvalid = true;
+                            }
+
+                            if (isInvalid) {
+                                throw new Error(
+                                    i18n.getValue(item.message, locale) || "Invalid value."
+                                );
+                            }
+                        };
+                    })
+                    .filter(Boolean);
             }
 
             memoizedBindComponents.current[memoKey] = function Bind({ children }) {
