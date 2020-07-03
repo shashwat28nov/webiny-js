@@ -1,5 +1,6 @@
 const { join, resolve } = require("path");
 const fs = require("fs");
+const { blue, green } = require("chalk");
 const indentString = require("indent-string");
 
 const indent = num => {
@@ -18,8 +19,7 @@ const indent = num => {
 };
 
 module.exports.executeFunction = async ({ name, event }, context) => {
-    const unindent = indent(2);
-    console.log(`> Executing function "${name}"`);
+    console.log(`> Executing function ${blue(name)}`);
     const setEnvironmentVariables = map => {
         Object.keys(map).forEach(key => {
             let value = map[key];
@@ -41,9 +41,15 @@ module.exports.executeFunction = async ({ name, event }, context) => {
                     context
                 );
             }
-            // console.log(`> process.env.${key}=${value}`);
-            process.env[key] = value;
+
+            map[key] = value;
         });
+
+        context.plugins.byType("cli-develop-set-env-variables").forEach(pl => {
+            pl.setVariables({ env: map }, context);
+        });
+
+        Object.assign(process.env, map);
     };
 
     const target = context.develop.resources[name];
@@ -66,9 +72,19 @@ module.exports.executeFunction = async ({ name, event }, context) => {
     // Set process.env
     setEnvironmentVariables(inputs.env || {});
 
+    // Base64 decode
+    if (event.isBase64Encoded) {
+        event.body = Buffer.from(event.body, "base64").toString("ascii");
+        event.isBase64Encoded = false;
+    }
+
+    if (!event.body || event.body.includes("IntrospectionQuery")) {
+        console.log(green(`Skipping log (irrelevant).`));
+    } else {
+        console.log(green(event.body));
+    }
+
     // TODO: try executing handler in a sandbox using v8 with localized process.env
     const handler = require(resolve(context.develop.stack, inputs.code, file))[exp];
-    const res = await handler(event, {});
-    unindent();
-    return res;
+    return await handler(event, {});
 };

@@ -44,16 +44,14 @@ module.exports = [
     {
         type: "cli-develop-sdk-handler",
         canHandle({ req }) {
-            return req.options.hostname.startsWith("lambda");
+            return req.hostname.startsWith("lambda");
         },
         async handle({ req, requestBody }, context) {
             // Extract function name
             const name = req.path.split("/")[3];
             // Create a Lambda event object
             const event = requestToLambda(req, requestBody);
-            console.log(`executeFunction`, name, event);
             const res = await context.develop.executeFunction({ name, event }, context);
-            console.log("res", res);
             return [200, res];
         }
     }

@@ -12,7 +12,7 @@ module.exports = {
             type: "cli-develop-sdk-handler",
             canHandle({ req }) {
                 console.log(`s3 canHandle`, req);
-                return req.options.hostname.startsWith("s3");
+                return req.hostname.startsWith("s3");
             },
             handle({ req, requestBody }, context) {
                 console.log(req);

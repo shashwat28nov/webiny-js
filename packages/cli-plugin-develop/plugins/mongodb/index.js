@@ -4,8 +4,6 @@ module.exports = {
     type: "cli-develop-before-resources",
     name: "cli-develop-before-resources-mongo",
     async run({ resources }, context) {
-        return;
-
         // TODO: once everything else is working, enable local DB
 
         console.log(`Setup MongoDB server`);
@@ -27,6 +25,14 @@ module.exports = {
 
         const uri = await mongod.getUri();
         console.log(`> MongoDB server running on ${uri}`);
-        process.env.MONGODB_SERVER = uri;
+
+        context.plugins.register({
+            type: "cli-develop-set-env-variables",
+            setVariables({ env }) {
+                if (env.MONGODB_SERVER) {
+                    env.MONGODB_SERVER = uri;
+                }
+            }
+        });
     }
 };
