@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useMemo } from "react";
 import { Form } from "@webiny/form";
-import { CmsEditorFieldRendererPlugin } from "@webiny/app-headless-cms/types";
+import {
+    CmsEditorFieldRendererPlugin,
+    CmsEditorFieldValidatorPlugin
+} from "@webiny/app-headless-cms/types";
 import { Grid, Cell } from "@webiny/ui/Grid";
 import { CircularProgress } from "@webiny/ui/Progress";
 import { getPlugins } from "@webiny/plugins";
@@ -36,6 +39,11 @@ export const ContentFormRender = ({
         []
     );
 
+    const validatorPlugins = useMemo(
+        () => getPlugins<CmsEditorFieldValidatorPlugin>("cms-editor-field-validator"),
+        []
+    );
+
     return (
         <Form
             onChange={onChange}
@@ -57,6 +65,7 @@ export const ContentFormRender = ({
                                             Bind={Bind}
                                             locale={locale}
                                             renderPlugins={renderPlugins}
+                                            validatorPlugins={validatorPlugins}
                                             contentModel={contentModel}
                                         />
                                     </Cell>
