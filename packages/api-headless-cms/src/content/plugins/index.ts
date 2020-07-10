@@ -7,6 +7,7 @@ import graphql from "./graphql";
 import { TypeValueEmitter } from "./utils/TypeValueEmitter";
 import addRefFieldHooks from "./modelFields/refField/addRefFieldHooks";
 import checkRefFieldsBeforeSave from "./modelFields/refField/checkRefFieldsBeforeSave";
+import validators from './validators';
 
 type HeadlessPluginsOptions = {
     type: string;
@@ -90,5 +91,6 @@ export default (
     graphql(options),
     modelFields,
     graphqlFields,
-    filterOperators()
+    filterOperators(),
+    validators
 ];
