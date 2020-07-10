@@ -181,6 +181,7 @@ export default ({ type }) => [
                     predefinedValues: PredefinedValues
                     renderer: CmsFieldRenderer
                     validation: [CmsFieldValidation]
+                    multipleValuesValidation: [CmsFieldValidation]
                     settings: JSON
                 }
 
@@ -195,6 +196,7 @@ export default ({ type }) => [
                     predefinedValues: PredefinedValuesInput
                     renderer: CmsFieldRendererInput
                     validation: [CmsFieldValidationInput]
+                    multipleValuesValidation: [CmsFieldValidationInput]
                     settings: JSON
                 }
 
