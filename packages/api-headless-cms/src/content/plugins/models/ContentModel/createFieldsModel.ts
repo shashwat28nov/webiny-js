@@ -46,6 +46,15 @@ export default context => {
                 settings: object({ value: {} })
             })()
         }),
+        multipleValuesValidation: fields({
+            list: true,
+            value: [],
+            instanceOf: withFields({
+                name: string({ validation: requiredShortString }),
+                message: i18nField({ field: string({ validation: shortString }), context }),
+                settings: object({ value: {} })
+            })()
+        }),
         settings: object({ value: {} })
     })();
 };
