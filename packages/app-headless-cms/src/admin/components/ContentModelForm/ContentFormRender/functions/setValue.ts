@@ -2,6 +2,16 @@ import cloneDeep from "lodash/cloneDeep";
 
 const setValue = ({ value, bind, locale, field, index }) => {
     const newValue = cloneDeep({ values: [], ...bind.value });
+    // Just a POC
+    if (!Array.isArray(newValue.values)) {
+
+        const newValueArray = [];
+        for (const key in newValue.values) {
+            newValueArray.push(newValue.values[key]);
+        }
+        console.log({ newValueArray });
+        newValue.values = newValueArray;
+    }
 
     let valueLocaleIndex = newValue.values.findIndex(item => item.locale === locale);
 

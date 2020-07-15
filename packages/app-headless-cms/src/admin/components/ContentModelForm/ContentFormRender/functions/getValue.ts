@@ -1,7 +1,18 @@
 import get from "lodash/get";
 
 const getValue = ({ bind, locale, field, index }) => {
-    let values = get(bind, "value.values");
+    // I needed to do this because now we have index in the key name
+    let values;
+    const arrayIndex = index >= 0 ? index : 0;
+    if (Array.isArray(bind.value) && bind.value[arrayIndex]) {
+        values = bind.value[arrayIndex].values;
+    } else {
+        values = get(bind, "value.values");
+    }
+
+    // Previously, it used ti be just this
+    // let values = get(bind, "value.values");
+
     if (!Array.isArray(values)) {
         values = [];
     }

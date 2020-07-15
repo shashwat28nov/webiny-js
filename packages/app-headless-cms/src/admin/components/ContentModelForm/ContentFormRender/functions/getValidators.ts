@@ -6,19 +6,17 @@ import {
 type getValidatorsParams = {
     validatorPlugins: CmsEditorFieldValidatorPlugin[];
     validation: CmsEditorFieldValidator[];
-    index: number;
     I18NGetValue: (value: any, locale?: string) => any;
     locale: string;
-    useArray?: boolean;
+    valueExtractor: (value: any) => any;
 };
 
 export const getValidators = ({
     validatorPlugins,
     validation,
-    index,
     I18NGetValue,
     locale,
-    useArray
+    valueExtractor
 }: getValidatorsParams) => {
     return validation
         .map(item => {
@@ -31,11 +29,7 @@ export const getValidators = ({
             }
 
             return async value => {
-                // TODO: get value by index
-                let realValue = I18NGetValue(value, locale);
-                if (!useArray) {
-                    realValue = realValue[index];
-                }
+                const realValue = valueExtractor(value);
 
                 let isInvalid;
                 try {
@@ -59,10 +53,12 @@ export const getValidators = ({
 
 export const getValidationResult = async ({ value, validator }) => {
     let isValid = true;
+    let message;
     try {
         await validator(value);
     } catch (error) {
         isValid = false;
+        message = error.message;
     }
-    return isValid;
+    return { isValid, message };
 };
