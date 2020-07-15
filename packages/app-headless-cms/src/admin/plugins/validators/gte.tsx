@@ -29,6 +29,12 @@ export default {
                     </Cell>
                 </Grid>
             );
+        },
+        validate: (value, validator) => {
+            const gteValue = validator.settings.value;
+            if (typeof gteValue !== "undefined") {
+                return validation.validate(value, `gte:${gteValue}`);
+            }
         }
     }
 } as CmsEditorFieldValidatorPlugin;

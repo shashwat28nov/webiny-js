@@ -29,6 +29,12 @@ export default {
                     </Cell>
                 </Grid>
             );
+        },
+        validate: (value, validator) => {
+            const minLengthValue = validator.settings.value;
+            if (typeof minLengthValue !== "undefined") {
+                return validation.validate(value, `minLength:${minLengthValue}`);
+            }
         }
     }
 } as CmsEditorFieldValidatorPlugin;

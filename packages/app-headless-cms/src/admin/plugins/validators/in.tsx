@@ -26,6 +26,12 @@ export default {
                     </Cell>
                 </Grid>
             );
+        },
+        validate: (value, validator) => {
+            const values = validator.settings.values;
+            if (Array.isArray(values)) {
+                return validation.validate(value, `in:${values.join(":")}`);
+            }
         }
     }
 } as CmsEditorFieldValidatorPlugin;

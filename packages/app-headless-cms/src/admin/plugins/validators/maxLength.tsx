@@ -29,6 +29,12 @@ export default {
                     </Cell>
                 </Grid>
             );
+        },
+        validate: (value, validator) => {
+            const maxLengthValue = validator.settings.value;
+            if (typeof maxLengthValue !== "undefined") {
+                return validation.validate(value, `maxLength:${maxLengthValue}`);
+            }
         }
     }
 } as CmsEditorFieldValidatorPlugin;
