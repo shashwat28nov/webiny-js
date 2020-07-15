@@ -102,11 +102,23 @@ const EditFieldDialog = ({ field, onSubmit, ...props }: EditFieldDialogProps) =>
 
                                     {Array.isArray(fieldPlugin.field.validators) &&
                                         fieldPlugin.field.validators.length > 0 && (
+                                        // TODO: update label to maybe `Field Validators`
                                             <Tab label={"Validators"}>
                                                 <ValidatorsTab
                                                     form={form}
-                                                    field={current}
                                                     fieldPlugin={fieldPlugin}
+                                                />
+                                            </Tab>
+                                        )}
+                                    {current.multipleValues &&
+                                        Array.isArray(fieldPlugin.field.multipleValuesValidators) &&
+                                        fieldPlugin.field.multipleValuesValidators.length > 0 && (
+                                            // TODO: update label to maybe `List Validators`
+                                            <Tab label={"Multiple Values Validators"}>
+                                                <ValidatorsTab
+                                                    form={form}
+                                                    fieldPlugin={fieldPlugin}
+                                                    multipleValuesValidators={true}
                                                 />
                                             </Tab>
                                         )}

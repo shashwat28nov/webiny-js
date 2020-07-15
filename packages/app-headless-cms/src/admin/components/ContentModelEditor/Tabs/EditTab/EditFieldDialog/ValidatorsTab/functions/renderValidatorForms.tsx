@@ -1,0 +1,131 @@
+import {
+    SimpleForm,
+    SimpleFormContent,
+    SimpleFormHeader
+} from "@webiny/app-admin/components/SimpleForm";
+import { Switch } from "@webiny/ui/Switch";
+import { Form } from "@webiny/form";
+import { Cell, Grid } from "@webiny/ui/Grid";
+import { validation } from "@webiny/validation";
+import { I18NInput } from "@webiny/app-i18n/admin/components";
+import React from "react";
+import { cloneDeep, debounce } from "lodash";
+
+const onEnabledChange = ({ i18n, data, validationValue, onChangeValidation, validator }) => {
+    if (data) {
+        const index = validationValue.findIndex(item => item.name === validator.name);
+        onChangeValidation([
+            ...validationValue.slice(0, index),
+            ...validationValue.slice(index + 1)
+        ]);
+    } else {
+        onChangeValidation([
+            ...validationValue,
+            {
+                name: validator.name,
+                settings: validator.defaultSettings,
+                message: {
+                    values: [
+                        {
+                            locale: i18n.getDefaultLocale().id,
+                            value: validator.defaultMessage
+                        }
+                    ]
+                }
+            }
+        ]);
+    }
+};
+
+const onFormChange = debounce(({ data, validationValue, onChangeValidation, validatorIndex }) => {
+    const newValidationValue = cloneDeep(validationValue);
+    newValidationValue[validatorIndex] = {
+        ...newValidationValue[validatorIndex],
+        ...cloneDeep(data)
+    };
+    onChangeValidation(newValidationValue);
+}, 200);
+
+export const renderValidatorForms = ({ validationValue, onChangeValidation, validators, i18n }) =>
+    validators.map(({ optional, validator }) => {
+        if (!validationValue) {
+            // TODO: set default value
+            validationValue = [];
+        }
+        const validatorIndex = validationValue.findIndex(item => item.name === validator.name);
+        const data = validationValue[validatorIndex];
+
+        return (
+            <SimpleForm key={validator.name}>
+                {/*TODO: @ts-adrian nema descriptiona?*/}
+                <SimpleFormHeader title={validator.label}>
+                    {optional && (
+                        <Switch
+                            label="Enabled"
+                            value={validatorIndex >= 0}
+                            onChange={() =>
+                                onEnabledChange({
+                                    i18n,
+                                    data,
+                                    validationValue,
+                                    onChangeValidation,
+                                    validator
+                                })
+                            }
+                        />
+                    )}
+                </SimpleFormHeader>
+                {data && (
+                    <Form
+                        data={data}
+                        onChange={data =>
+                            onFormChange({
+                                data,
+                                validationValue,
+                                onChangeValidation,
+                                validatorIndex
+                            })
+                        }
+                    >
+                        {({ Bind, setValue }) => (
+                            <SimpleFormContent>
+                                <Grid>
+                                    <Cell span={12}>
+                                        {/*TODO: @ts-adrian kako ovo?*/}
+                                        <Bind
+                                            name={"message"}
+                                            validators={validation.create("required")}
+                                        >
+                                            <I18NInput
+                                                label={"Message"}
+                                                description={
+                                                    "This message will be displayed to the user"
+                                                }
+                                            />
+                                        </Bind>
+                                    </Cell>
+                                </Grid>
+
+                                {typeof validator.renderSettings === "function" &&
+                                    validator.renderSettings({
+                                        setValue,
+                                        setMessage: message => {
+                                            setValue("message", {
+                                                values: [
+                                                    {
+                                                        locale: i18n.getDefaultLocale().id,
+                                                        value: message
+                                                    }
+                                                ]
+                                            });
+                                        },
+                                        data,
+                                        Bind
+                                    })}
+                            </SimpleFormContent>
+                        )}
+                    </Form>
+                )}
+            </SimpleForm>
+        );
+    });
