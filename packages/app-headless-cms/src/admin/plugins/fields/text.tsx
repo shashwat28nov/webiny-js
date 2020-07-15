@@ -14,6 +14,7 @@ const plugin: CmsEditorFieldTypePlugin = {
     field: {
         type: "text",
         validators: ["required", "minLength", "maxLength", "pattern"],
+        multipleValuesValidators: ["required", "minLength", "maxLength"],
         label: t`Text`,
         description: t`Titles, names, single line values.`,
         icon: <TextIcon />,

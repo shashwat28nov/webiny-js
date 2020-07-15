@@ -13,6 +13,7 @@ export type CmsEditorFieldTypePlugin = Plugin & {
         type: string;
         label: string;
         validators?: string[];
+        multipleValuesValidators?: string[];
         description: string;
         icon: React.ReactNode;
         allowMultipleValues: boolean;

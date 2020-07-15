@@ -37,6 +37,13 @@ export const FIELDS_FIELDS = `
                 ${I18N_FIELDS}
             }
         }
+        multipleValuesValidation {
+            name
+            settings
+            message {
+                ${I18N_FIELDS}
+            }
+        }
         settings
 `;
 
