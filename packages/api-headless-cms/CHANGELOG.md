@@ -3,6 +3,112 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.5.0](https://github.com/webiny/webiny-js/compare/v4.5.0-beta.4...v4.5.0) (2020-07-14)
+
+**Note:** Version bump only for package @webiny/api-headless-cms
+
+
+
+
+
+# [4.5.0-beta.4](https://github.com/webiny/webiny-js/compare/v4.5.0-beta.3...v4.5.0-beta.4) (2020-07-14)
+
+**Note:** Version bump only for package @webiny/api-headless-cms
+
+
+
+
+
+# [4.5.0-beta.3](https://github.com/webiny/webiny-js/compare/v4.5.0-beta.2...v4.5.0-beta.3) (2020-07-14)
+
+**Note:** Version bump only for package @webiny/api-headless-cms
+
+
+
+
+
+# [4.5.0-beta.2](https://github.com/webiny/webiny-js/compare/v4.5.0-beta.1...v4.5.0-beta.2) (2020-07-14)
+
+**Note:** Version bump only for package @webiny/api-headless-cms
+
+
+
+
+
+# [4.5.0-beta.1](https://github.com/webiny/webiny-js/compare/v4.5.0-beta.0...v4.5.0-beta.1) (2020-07-14)
+
+**Note:** Version bump only for package @webiny/api-headless-cms
+
+
+
+
+
+# [4.5.0-beta.0](https://github.com/webiny/webiny-js/compare/v4.4.0...v4.5.0-beta.0) (2020-07-14)
+
+
+### Bug Fixes
+
+* export mock IDs for direct usage in tests ([4e0c451](https://github.com/webiny/webiny-js/commit/4e0c4518eff4a3145872afae01e2cbe9708873fb))
+* make sure newly added ref fields cannot reference a model with no title field ([752753b](https://github.com/webiny/webiny-js/commit/752753b8580d8cfeb4e1b3f436831a6cd7a232ee))
+* remerging from master branch, fixed handler error ([2786e6e](https://github.com/webiny/webiny-js/commit/2786e6e6a2e2e51fefcf754d6a03b7287eff48b0))
+* removed searchModel from headless cms model fields text ([de1b0b6](https://github.com/webiny/webiny-js/commit/de1b0b6d98dfbee14323818f034c87f47ee04e75))
+
+
+### Features
+
+* **api-headless-cms:** add `environmentAliases` ([e39cc12](https://github.com/webiny/webiny-js/commit/e39cc125dfe05b32660d2eea60cda378e2af77cd))
+
+
+
+
+
+# [4.4.0](https://github.com/webiny/webiny-js/compare/v4.4.0-beta.3...v4.4.0) (2020-07-08)
+
+**Note:** Version bump only for package @webiny/api-headless-cms
+
+
+
+
+
+# [4.4.0-beta.3](https://github.com/webiny/webiny-js/compare/v4.4.0-beta.2...v4.4.0-beta.3) (2020-07-07)
+
+**Note:** Version bump only for package @webiny/api-headless-cms
+
+
+
+
+
+# [4.4.0-beta.2](https://github.com/webiny/webiny-js/compare/v4.4.0-beta.1...v4.4.0-beta.2) (2020-07-07)
+
+**Note:** Version bump only for package @webiny/api-headless-cms
+
+
+
+
+
+# [4.4.0-beta.1](https://github.com/webiny/webiny-js/compare/v4.4.0-beta.0...v4.4.0-beta.1) (2020-07-07)
+
+**Note:** Version bump only for package @webiny/api-headless-cms
+
+
+
+
+
+# [4.4.0-beta.0](https://github.com/webiny/webiny-js/compare/v4.3.0...v4.4.0-beta.0) (2020-07-07)
+
+
+### Bug Fixes
+
+* correct query error message ([d4b1d57](https://github.com/webiny/webiny-js/commit/d4b1d57033129697c46654b8cf9d2f2b0edc1bb8))
+* extract plugin into a separate file ([fb6ebe0](https://github.com/webiny/webiny-js/commit/fb6ebe0da38cc61d2ac4be560274384641e60291))
+* remove unused import ([cbd8948](https://github.com/webiny/webiny-js/commit/cbd89481716e385434d5d0b900484974e260aa36))
+* throw a proper error message on invalid environment or API type ([3b24817](https://github.com/webiny/webiny-js/commit/3b24817c0545a9aa90931647637f7aeee5a6326b))
+* use titleFieldId in order to perform referenceIn checks ([c7b3b6c](https://github.com/webiny/webiny-js/commit/c7b3b6cb77adb67d0c06dd333b52db0a1591dd31))
+
+
+
+
+
 # [4.3.0](https://github.com/webiny/webiny-js/compare/v4.3.0-beta.5...v4.3.0) (2020-07-01)
 
 **Note:** Version bump only for package @webiny/api-headless-cms
