@@ -388,73 +388,77 @@ module.exports = () => ({
             }
         },
         api: {
-            component: "@webiny/serverless-api-gateway",
-            inputs: {
-                region: process.env.AWS_REGION,
-                description: "Main API Gateway",
-                binaryMediaTypes: ["*/*"],
-                endpoints: [
-                    {
-                        path: "/graphql",
-                        method: "ANY",
-                        function: "${apolloGateway.arn}"
-                    },
-                    {
-                        path: "/files/{path}",
-                        method: "ANY",
-                        function: "${filesDownload.arn}"
-                    },
-                    {
-                        path: "/cms/{key+}",
-                        method: "ANY",
-                        function: "${cmsContent.arn}"
-                    }
-                ]
+            deploy: {
+                component: "@webiny/serverless-api-gateway",
+                inputs: {
+                    region: process.env.AWS_REGION,
+                    description: "Main API Gateway",
+                    binaryMediaTypes: ["*/*"],
+                    endpoints: [
+                        {
+                            path: "/graphql",
+                            method: "ANY",
+                            function: "${apolloGateway.arn}"
+                        },
+                        {
+                            path: "/files/{path}",
+                            method: "ANY",
+                            function: "${filesDownload.arn}"
+                        },
+                        {
+                            path: "/cms/{key+}",
+                            method: "ANY",
+                            function: "${cmsContent.arn}"
+                        }
+                    ]
+                }
             }
         },
         cdn: {
-            component: "@webiny/serverless-aws-cloudfront",
-            inputs: {
-                origins: [
-                    {
-                        url: "${api.url}",
-                        pathPatterns: {
-                            "/graphql": {
-                                ttl: 0,
-                                forward: {
-                                    headers: ["Accept", "Accept-Language"]
+            deploy: {
+                component: "@webiny/serverless-aws-cloudfront",
+                inputs: {
+                    origins: [
+                        {
+                            url: "${api.url}",
+                            pathPatterns: {
+                                "/graphql": {
+                                    ttl: 0,
+                                    forward: {
+                                        headers: ["Accept", "Accept-Language"]
+                                    },
+                                    allowedHttpMethods: [
+                                        "GET",
+                                        "HEAD",
+                                        "OPTIONS",
+                                        "PUT",
+                                        "POST",
+                                        "PATCH",
+                                        "DELETE"
+                                    ]
                                 },
-                                allowedHttpMethods: [
-                                    "GET",
-                                    "HEAD",
-                                    "OPTIONS",
-                                    "PUT",
-                                    "POST",
-                                    "PATCH",
-                                    "DELETE"
-                                ]
-                            },
-                            "/files/*": {
-                                ttl: 2592000 // 1 month
-                            },
-                            "/cms*": {
-                                ttl: 0,
-                                forward: {
-                                    headers: ["Accept", "Accept-Language"]
+                                "/files/*": {
+                                    ttl: 2592000 // 1 month
                                 },
-                                allowedHttpMethods: [
-                                    "GET",
-                                    "HEAD",
-                                    "OPTIONS",
-                                    "PUT",
-                                    "POST",
-                                    "PATCH",
-                                    "DELETE"
-                                ]
+                                "/cms*": {
+                                    ttl: 0,
+                                    forward: {
+                                        headers: ["Accept", "Accept-Language"]
+                                    },
+                                    allowedHttpMethods: [
+                                        "GET",
+                                        "HEAD",
+                                        "OPTIONS",
+                                        "PUT",
+                                        "POST",
+                                        "PATCH",
+                                        "DELETE"
+                                    ]
+                                }
                             }
                         }
-                    }
-                ]
+                    ]
+                }
             }
         }
     }
