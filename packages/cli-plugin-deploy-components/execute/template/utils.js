@@ -160,10 +160,6 @@ const resolveTemplate = (inputs, template) => {
 };
 
 const getDeployableComponent = obj => {
-    if (obj.component) {
-        return obj;
-    }
-
     if (obj.deploy && obj.deploy.component) {
         return obj.deploy;
     }
