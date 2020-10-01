@@ -8,7 +8,7 @@ const writeJsonFile = require("write-json-file");
 const { v4: uuidv4 } = require("uuid");
 
 const s3BucketName = (projectId, appName, env) => {
-    return `${projectId}-${appName.toLowerCase().replace(/_/g, "-")}-${env}`;
+    return `${projectId}-${appName.toCamelCase().replace(/_/g, "-")}-${env}`;
 };
 
 module.exports = async ({ appName, root }) => {
